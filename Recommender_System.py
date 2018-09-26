@@ -78,7 +78,7 @@ def make_recommendations(dataframe):
     distances, indices = model_knn.kneighbors(dataframe.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 6)
     for i in range(0, len(distances.flatten())):
         if i == 0:
-            print('Recommendations for {0}:\n'.format(dataframe.index[query_index]))
+            print('Nearest neighbors of {0}:\n'.format(dataframe.index[query_index]))
         else:
             print('{0}: {1}, with distance of {2}:'.format(i, dataframe.index[indices.flatten()[i]], distances
                                                            .flatten()[i]))
