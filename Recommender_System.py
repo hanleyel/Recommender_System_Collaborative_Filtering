@@ -56,6 +56,7 @@ def create_reviewer_product_matrix(dataframe):
     # Pivot the dataframe so that unique reviewers are on the y axis and unique products are on the x axis.
     # NOTE: Removed zeros in order to perform algebraic operations.
     reviewer_product_dataframe = dataframe.pivot(index='asin', columns='reviewerID', values='overall').fillna(0)
+    # reviewer_product_dataframe = reviewer_product_dataframe.fillna(reviewer_product_dataframe.mean())
 
     # Convert the dataframe to a matrix.
     # This matrix still contains NaN values.
@@ -104,7 +105,7 @@ def de_mean(reviewer_product_dataframe):
     user_ratings_mean = np.mean(rp_matrix, axis = 1)
     r_de_meaned = rp_matrix - user_ratings_mean.reshape(-1, 1)
 
-    return r_de_meaned
+    return r_de_meaned, user_ratings_mean
 
 def create_svd(de_meaned_matrix):
     U, sigma, Vt = svds(de_meaned_matrix, k=50)
@@ -113,6 +114,13 @@ def create_svd(de_meaned_matrix):
 def to_diagonal_matrix(sigma):
     sigma = np.diag(sigma)
     return sigma
+
+# Make predictions from decomposed matrices
+def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_dataframe):
+    all_user_predicted_ratings = np.dot(np.dot(U.T, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
+    preds_df = pd.DataFrame(all_user_predicted_ratings, columns = reviewer_product_dataframe.columns)
+    return preds_df
+
 
 
 #####################################
@@ -128,8 +136,15 @@ reviewer_product_dataframe = reviewer_product_matrix[1]
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
 de_meaned_matrix = de_mean(reviewer_product_matrix[1])
-rp_svd = create_svd(de_meaned_matrix)
+rp_svd = create_svd(de_meaned_matrix[0])
 diag_matrix = to_diagonal_matrix(rp_svd[1])
+
+# print(rp_svd[0].shape)
+# print(rp_svd[1].shape)
+# print(rp_svd[2].shape)
+
+# recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1], rp_svd[2], de_meaned_matrix[1],
+#                                         reviewer_product_dataframe)
 
 ####################################
 #####     PRINT STATEMENTS     #####
@@ -142,6 +157,11 @@ diag_matrix = to_diagonal_matrix(rp_svd[1])
 # print(reviewer_product_sparse)
 # print(reviewer_product_dataframe)
 # print(model_knn)
-print(de_meaned_matrix)
-print(rp_svd)
+# print(de_meaned_matrix[0])
+# print(rp_svd)
+print(rp_svd[0].shape)
+print(rp_svd[1].shape)
+print(rp_svd[2].shape)
+print(rp_svd[2].T.shape)
 print(diag_matrix)
+# print(recomposed_matrix)
