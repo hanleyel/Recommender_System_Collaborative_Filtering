@@ -117,7 +117,7 @@ def to_diagonal_matrix(sigma):
 
 # Make predictions from decomposed matrices
 def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_dataframe):
-    all_user_predicted_ratings = np.dot(np.dot(U.T, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
+    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
     preds_df = pd.DataFrame(all_user_predicted_ratings, columns = reviewer_product_dataframe.columns)
     return preds_df
 
@@ -143,8 +143,8 @@ diag_matrix = to_diagonal_matrix(rp_svd[1])
 # print(rp_svd[1].shape)
 # print(rp_svd[2].shape)
 
-# recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1], rp_svd[2], de_meaned_matrix[1],
-#                                         reviewer_product_dataframe)
+recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
+                                        reviewer_product_dataframe)
 
 ####################################
 #####     PRINT STATEMENTS     #####
@@ -164,4 +164,4 @@ print(rp_svd[1].shape)
 print(rp_svd[2].shape)
 print(rp_svd[2].T.shape)
 print(diag_matrix)
-# print(recomposed_matrix)
+print(recomposed_matrix)
