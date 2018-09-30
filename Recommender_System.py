@@ -6,9 +6,9 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 from sklearn.neighbors import NearestNeighbors
 
-###################################
-#####     UNZIP JSON DATA     #####
-###################################
+#######################################
+#####     UNZIPPING JSON DATA     #####
+#######################################
 
 # def unzip_json(filename):
 #     unzipped_data = pd.read_json(gzip.open(filename))
@@ -40,11 +40,13 @@ def convert_to_csv(dataframe, desired_filename):
     except:
         print('Please try another dataframe or file name.')
 
+
 #################################################################
 #####     ALTERNATE LOADING AND STORING DATA WITH IJSON     #####
 #################################################################
 
 # Using ijson is a way to read the data as a "stream", which is better for scaling up to large datasets
+
 
 ########################################################
 #####     CONVERTING DATAFRAME TO A CSR MATRIX     #####
@@ -63,6 +65,7 @@ def create_reviewer_product_matrix(dataframe):
     reviewer_product_sparse = csr_matrix(reviewer_product_dataframe.values)
 
     return (reviewer_product_sparse, reviewer_product_dataframe)
+
 
 ####################################################
 #####     IMPLEMENTING k NEAREST NEIGHBORS     #####
@@ -122,6 +125,13 @@ def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_datafr
     return preds_df
 
 
+######################################################
+#####     MAKING PREDICTIONS FROM SVD MATRIX     #####
+######################################################
+
+
+# Merge datasets and calculate predicted ratings?
+
 
 #####################################
 #####     RUNNING FUNCTIONS     #####
@@ -146,6 +156,7 @@ diag_matrix = to_diagonal_matrix(rp_svd[1])
 recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
                                         reviewer_product_dataframe)
 
+
 ####################################
 #####     PRINT STATEMENTS     #####
 ####################################
@@ -159,9 +170,8 @@ recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_m
 # print(model_knn)
 # print(de_meaned_matrix[0])
 # print(rp_svd)
-print(rp_svd[0].shape)
-print(rp_svd[1].shape)
-print(rp_svd[2].shape)
-print(rp_svd[2].T.shape)
+# print(rp_svd[0].shape)
+# print(rp_svd[1].shape)
+# print(rp_svd[2].shape)
 print(diag_matrix)
 print(recomposed_matrix)
