@@ -5,26 +5,27 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 from sklearn.neighbors import NearestNeighbors
+import csv
 
 #######################################
 #####     UNZIPPING JSON DATA     #####
 #######################################
 
-# def unzip_json(filename):
-#     unzipped_data = pd.read_json(gzip.open(filename))
-#     return unzipped_data
+def unzip_json(filename):
+    unzipped_data = pd.read_json(gzip.open(filename))
+    return unzipped_data
 
 
-############################################
-#####     LOADING AND STORING DATA     #####
-############################################
+########################################################
+#####     LOADING AND WRITING JSON DATA TO CSV     #####
+########################################################
 
 # Output json training data as a Pandas dataframe.
 def json_to_df(file_name):
 
     try:
         training_data = pd.read_json(file_name, lines=True)
-        return training_data.head(10000)
+        return training_data
     except:
         print('Please try another file name.')
         return None
@@ -41,12 +42,50 @@ def convert_to_csv(dataframe, desired_filename):
         print('Please try another dataframe or file name.')
 
 
+
+
 #################################################################
-#####     ALTERNATE LOADING AND STORING DATA WITH IJSON     #####
+#####     LOADING AND STORING CSV DATA AS SPARSE MATRIX     #####
 #################################################################
 
-# Using ijson is a way to read the data as a "stream", which is better for scaling up to large datasets
+# Returns dictionaries with unique users and products as keys and unique ints as values.
+def create_user_product_dicts(filename):
 
+    user_dict = {}
+    product_dict = {}
+
+    with open(filename, 'r') as train_file:
+        file_reader=csv.reader(train_file, delimiter=',')
+        next(file_reader, None)
+        count_user = 0
+        count_product = 0
+        for row in file_reader:
+            if row[0] not in user_dict:
+                user_dict[row[0]] = count_user
+                count_user += 1
+            if row[1] not in product_dict:
+                product_dict[row[1]] = count_product
+                count_product += 1
+
+    return user_dict, product_dict
+
+
+
+def readUrm(filename, user_dict, product_dict):
+
+    num_user_ids = len(user_dict)
+    print(num_user_ids)
+    num_product_ids = len(product_dict)
+    print(num_product_ids)
+
+    urm = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
+    with open(filename, 'r') as trainFile:
+        urmReader = csv.reader(trainFile, delimiter=',')
+        next(urmReader, None)
+        for row in urmReader:
+            urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
+
+    return csr_matrix(urm, dtype=np.float32)
 
 ########################################################
 #####     CONVERTING DATAFRAME TO A CSR MATRIX     #####
@@ -129,9 +168,7 @@ def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_datafr
 #####     MAKING PREDICTIONS FROM SVD MATRIX     #####
 ######################################################
 
-
 # Merge datasets and calculate predicted ratings?
-
 
 
 #####################################
@@ -139,25 +176,23 @@ def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_datafr
 #####################################
 
 # unzipped_data = unzip_json('reviews.training.json.gz')
-training_data = json_to_df('reviews.training.json')
+# training_data = json_to_df('reviews.training.json')
 
-# convert_to_csv(shortened_training_data, 'shortened_training_data.csv')
-reviewer_product_matrix = create_reviewer_product_matrix(training_data)
-reviewer_product_sparse = reviewer_product_matrix[0]
-reviewer_product_dataframe = reviewer_product_matrix[1]
+# convert_to_csv(training_data[['reviewerID', 'asin', 'overall']], 'reviews.training.csv')
+# reviewer_product_matrix = create_reviewer_product_matrix(training_data)
+# reviewer_product_sparse = reviewer_product_matrix[0]
+# reviewer_product_dataframe = reviewer_product_matrix[1]
+user_dict = create_user_product_dicts('reviews.training.csv')
+print(user_dict[0])
+print(user_dict[1])
+sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
-de_meaned_matrix = de_mean(reviewer_product_matrix[1])
-rp_svd = create_svd(de_meaned_matrix[0])
-diag_matrix = to_diagonal_matrix(rp_svd[1])
-
-# print(rp_svd[0].shape)
-# print(rp_svd[1].shape)
-# print(rp_svd[2].shape)
-
-recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
-                                        reviewer_product_dataframe)
-
+# de_meaned_matrix = de_mean(reviewer_product_matrix[1])
+# rp_svd = create_svd(de_meaned_matrix[0])
+# diag_matrix = to_diagonal_matrix(rp_svd[1])
+# recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
+#                                         reviewer_product_dataframe)
 # convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
 
 
@@ -166,6 +201,7 @@ recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_m
 ####################################
 
 # print(training_data)
+# print(training_data.shape)
 # print(shortened_training_data[['reviewerID', 'asin', 'reviewerName', 'helpful', 'overall', 'summary']].head())
 # print(shortened_training_data['reviewerID'].value_counts())
 # print(shortened_training_data['asin'].value_counts())
@@ -177,7 +213,8 @@ recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_m
 # print(rp_svd[0].shape)
 # print(rp_svd[1].shape)
 # print(rp_svd[2].shape)
-print(diag_matrix)
-print(recomposed_matrix)
-
-print(recomposed_matrix['A012468118FTQAINEI0OQ'])
+# print(diag_matrix)
+# print(recomposed_matrix)
+# print(user_dict[0])
+# print(user_dict[1])
+print(sparse_matrix)
