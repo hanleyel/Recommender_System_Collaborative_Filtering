@@ -1,5 +1,19 @@
 # Recommender_System_Collaborative_Filtering
-# From this link: https://www.youtube.com/watch?v=h9gpufJFF-0&index=43&list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV
+
+# About recommender systems (from Mining Massive Datasets): https://www.youtube.com/watch?v=h9gpufJFF-0&index=43&list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV
+
+# Implementing recommender systems (from Mining Massive Datasets): https://www.youtube.com/watch?v=6BTLobS7AU8&list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV&index=44
+
+# kNN tutorial at this link: https://beckernick.github.io/music_recommender/
+
+# SVD
+# https://www.youtube.com/watch?v=dt9iJPNFqaI
+# https://beckernick.github.io/matrix-factorization-recommender/
+# https://towardsdatascience.com/how-did-we-build-book-recommender-systems-in-an-hour-part-2-k-nearest-neighbors-and-matrix-c04b3c2ef55c
+
+
+
+
 A collaborative filtering recommender system to predict consumer ratings.
 
 The basic idea of collaborative filtering is that we have a user:
@@ -52,4 +66,4 @@ For item i, find other similar items
 
 Typically outperforms user-user collaborative filtering
 Items are "simpler" than users
-Item similarity is more meaningful than user similarity
+Item similarity is more meaningful than user

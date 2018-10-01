@@ -20,7 +20,7 @@ from sklearn.neighbors import NearestNeighbors
 ############################################
 
 # Output json training data as a Pandas dataframe.
-def get_training_data(file_name):
+def json_to_df(file_name):
 
     try:
         training_data = pd.read_json(file_name, lines=True)
@@ -133,12 +133,14 @@ def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_datafr
 # Merge datasets and calculate predicted ratings?
 
 
+
 #####################################
 #####     RUNNING FUNCTIONS     #####
 #####################################
 
 # unzipped_data = unzip_json('reviews.training.json.gz')
-training_data = get_training_data('reviews.training.json')
+training_data = json_to_df('reviews.training.json')
+
 # convert_to_csv(shortened_training_data, 'shortened_training_data.csv')
 reviewer_product_matrix = create_reviewer_product_matrix(training_data)
 reviewer_product_sparse = reviewer_product_matrix[0]
@@ -155,6 +157,8 @@ diag_matrix = to_diagonal_matrix(rp_svd[1])
 
 recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
                                         reviewer_product_dataframe)
+
+# convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
 
 
 ####################################
@@ -175,3 +179,5 @@ recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_m
 # print(rp_svd[2].shape)
 print(diag_matrix)
 print(recomposed_matrix)
+
+print(recomposed_matrix['A012468118FTQAINEI0OQ'])
