@@ -2,10 +2,13 @@ import pandas as pd
 import json
 import gzip
 import numpy as np
+import scipy
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 from sklearn.neighbors import NearestNeighbors
 import csv
+from sparsesvd import sparsesvd
+import math
 
 #######################################
 #####     UNZIPPING JSON DATA     #####
@@ -85,83 +88,103 @@ def readUrm(filename, user_dict, product_dict):
         for row in urmReader:
             urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
 
-    return csr_matrix(urm, dtype=np.float32)
+    # return csr_matrix(urm, dtype=np.float32)
+    return scipy.sparse.csc_matrix(urm, dtype=np.float32)
 
 ########################################################
 #####     CONVERTING DATAFRAME TO A CSR MATRIX     #####
 ########################################################
 
-# Pivot datarame and create Reviewer x Product matrix populated with ratings. Return tuple with sparse matrix and dataframe.
-def create_reviewer_product_matrix(dataframe):
-
-    # Pivot the dataframe so that unique reviewers are on the y axis and unique products are on the x axis.
-    # NOTE: Removed zeros in order to perform algebraic operations.
-    reviewer_product_dataframe = dataframe.pivot(index='asin', columns='reviewerID', values='overall').fillna(0)
-    # reviewer_product_dataframe = reviewer_product_dataframe.fillna(reviewer_product_dataframe.mean())
-
-    # Convert the dataframe to a matrix.
-    # This matrix still contains NaN values.
-    reviewer_product_sparse = csr_matrix(reviewer_product_dataframe.values)
-
-    return (reviewer_product_sparse, reviewer_product_dataframe)
+# # NOTE: I originally used this method, but my dataset was too large to pivot as a pandas dataframe.
+# # Pivot datarame and create Reviewer x Product matrix populated with ratings. Return tuple with sparse matrix and dataframe.
+# def create_reviewer_product_matrix(dataframe):
+#
+#     # Pivot the dataframe so that unique reviewers are on the y axis and unique products are on the x axis.
+#     # NOTE: Removed zeros in order to perform algebraic operations.
+#     reviewer_product_dataframe = dataframe.pivot(index='asin', columns='reviewerID', values='overall').fillna(0)
+#     # reviewer_product_dataframe = reviewer_product_dataframe.fillna(reviewer_product_dataframe.mean())
+#
+#     # Convert the dataframe to a matrix.
+#     # This matrix still contains NaN values.
+#     reviewer_product_sparse = csr_matrix(reviewer_product_dataframe.values)
+#
+#     return (reviewer_product_sparse, reviewer_product_dataframe)
 
 
 ####################################################
 #####     IMPLEMENTING k NEAREST NEIGHBORS     #####
 ####################################################
+#
+# # Input a matrix and return a k_nn model using cosine similarity.
+# # NOTE: In the future, this should be switched to a centered cosine.
+# def k_nn(matrix):
+#
+#     try:
+#         model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
+#         model_knn.fit(matrix)
+#         return model_knn
+#
+#     except:
+#         print('Please try another matrix.')
+#         return None
+#
+#
+# # Make k Nearest Neighbors recommendations
+# def make_recommendations(dataframe):
+#     query_index = np.random.choice(dataframe.shape[0])
+#     distances, indices = model_knn.kneighbors(dataframe.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 6)
+#     for i in range(0, len(distances.flatten())):
+#         if i == 0:
+#             print('Items most similar to {0}:\n'.format(dataframe.index[query_index]))
+#         else:
+#             print('{0}: {1}, with distance of {2}:'.format(i, dataframe.index[indices.flatten()[i]], distances
+#                                                            .flatten()[i]))
+#     return None
 
-# Input a matrix and return a k_nn model using cosine similarity.
-# NOTE: In the future, this should be switched to a centered cosine.
-def k_nn(matrix):
 
-    try:
-        model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
-        model_knn.fit(matrix)
-        return model_knn
+##########################################################
+#####     IMPLEMENTING SVD MATRIX FROM DATAFRAME     #####
+##########################################################
+#
+# # De-mean the data
+# def de_mean(reviewer_product_dataframe):
+#     rp_matrix = reviewer_product_dataframe.values
+#     user_ratings_mean = np.mean(rp_matrix, axis = 1)
+#     r_de_meaned = rp_matrix - user_ratings_mean.reshape(-1, 1)
+#
+#     return r_de_meaned, user_ratings_mean
+#
+# def create_svd(de_meaned_matrix):
+#     U, sigma, Vt = svds(de_meaned_matrix, k=50)
+#     return U, sigma, Vt
+#
+# def to_diagonal_matrix(sigma):
+#     sigma = np.diag(sigma)
+#     return sigma
+#
+# # Make predictions from decomposed matrices
+# def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_dataframe):
+#     all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
+#     preds_df = pd.DataFrame(all_user_predicted_ratings, columns = reviewer_product_dataframe.columns)
+#     return preds_df
 
-    except:
-        print('Please try another matrix.')
-        return None
+########################################################################
+#####     ALTERNATE IMPLEMENTING SVD MATRIX FROM SPARSE MATRIX     #####
+########################################################################
 
+def computeSVD(sparse_matrix, K):
+    U, s, Vt = sparsesvd(sparse_matrix, K)
 
-# Make k Nearest Neighbors recommendations
-def make_recommendations(dataframe):
-    query_index = np.random.choice(dataframe.shape[0])
-    distances, indices = model_knn.kneighbors(dataframe.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 6)
-    for i in range(0, len(distances.flatten())):
-        if i == 0:
-            print('Items most similar to {0}:\n'.format(dataframe.index[query_index]))
-        else:
-            print('{0}: {1}, with distance of {2}:'.format(i, dataframe.index[indices.flatten()[i]], distances
-                                                           .flatten()[i]))
-    return None
+    dim = (len(s), len(s))
+    S = np.zeros(dim, dtype=np.float32)
+    for i in range(0, len(s)):
+        S[i,i] = math.sqrt(s[i])
 
+    U = csr_matrix(np.transpose(U), dtype=np.float32)
+    S = csr_matrix(S, dtype=np.float32)
+    Vt = csr_matrix(Vt, dtype=np.float32)
 
-###########################################
-#####     IMPLEMENTING SVD MATRIX     #####
-###########################################
-
-# De-mean the data
-def de_mean(reviewer_product_dataframe):
-    rp_matrix = reviewer_product_dataframe.values
-    user_ratings_mean = np.mean(rp_matrix, axis = 1)
-    r_de_meaned = rp_matrix - user_ratings_mean.reshape(-1, 1)
-
-    return r_de_meaned, user_ratings_mean
-
-def create_svd(de_meaned_matrix):
-    U, sigma, Vt = svds(de_meaned_matrix, k=50)
-    return U, sigma, Vt
-
-def to_diagonal_matrix(sigma):
-    sigma = np.diag(sigma)
-    return sigma
-
-# Make predictions from decomposed matrices
-def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_dataframe):
-    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
-    preds_df = pd.DataFrame(all_user_predicted_ratings, columns = reviewer_product_dataframe.columns)
-    return preds_df
+    return U, S, Vt
 
 
 ######################################################
@@ -177,15 +200,13 @@ def re_compose_matrices(U, sigma, Vt, user_ratings_mean, reviewer_product_datafr
 
 # unzipped_data = unzip_json('reviews.training.json.gz')
 # training_data = json_to_df('reviews.training.json')
-
 # convert_to_csv(training_data[['reviewerID', 'asin', 'overall']], 'reviews.training.csv')
 # reviewer_product_matrix = create_reviewer_product_matrix(training_data)
 # reviewer_product_sparse = reviewer_product_matrix[0]
 # reviewer_product_dataframe = reviewer_product_matrix[1]
 user_dict = create_user_product_dicts('reviews.training.csv')
-print(user_dict[0])
-print(user_dict[1])
 sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
+U, S, Vt = computeSVD(sparse_matrix, 90)
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
 # de_meaned_matrix = de_mean(reviewer_product_matrix[1])
@@ -217,4 +238,11 @@ sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
 # print(recomposed_matrix)
 # print(user_dict[0])
 # print(user_dict[1])
+print('Sparse matrix')
 print(sparse_matrix)
+print('U')
+print(U)
+print('S')
+print(S)
+print('Vt')
+print(Vt)
