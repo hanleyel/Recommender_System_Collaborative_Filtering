@@ -56,19 +56,20 @@ def create_user_product_dicts(filename):
 
     user_dict = {}
     product_dict = {}
+    user_count = 0
+    product_count = 0
 
     with open(filename, 'r') as train_file:
         file_reader=csv.reader(train_file, delimiter=',')
         next(file_reader, None)
-        count_user = 0
-        count_product = 0
+
         for row in file_reader:
             if row[0] not in user_dict:
-                user_dict[row[0]] = count_user
-                count_user += 1
+                user_dict[row[0]] = user_count
+                user_count += 1
             if row[1] not in product_dict:
-                product_dict[row[1]] = count_product
-                count_product += 1
+                product_dict[row[1]] = product_count
+                product_count += 1
 
     return user_dict, product_dict
 
@@ -147,33 +148,29 @@ def readUrm(filename, user_dict, product_dict):
 ############################################
 
 # Outputs dictionaries with unique test users and test products.
-# Keys are user and product IDs, values are counts that map to the training data (in the case of already seen IDs;
-# otherwise values are unique).
 def get_test_users_products(filename, training_user_dict, training_product_dict):
 
-    user_count = len(training_user_dict)
-    product_count = len(training_product_dict)
-    test_users = {}
-    test_products = {}
+    # test_user_count = len(training_user_dict)
+    # test_product_count = len(training_product_dict)
+    test_user_count = 0
+    test_product_count = 0
+    test_user_dict = {}
+    test_product_dict = {}
 
     with open(filename, 'r') as test_file:
         test_reader = csv.reader(test_file, delimiter=',')
         next(test_reader, None)
+
         for row in test_reader:
             # Add unique users to test_user dictionary.
-            if row[1] in training_user_dict and row[1 not in test_users]:
-                test_users[row[1]] = training_user_dict[row[1]]
-            elif row[1] not in test_users:
-                user_count += 1
-                test_users[row[1]] = user_count
-            # Add unique products to test_product dictionary.
-            if row[2] in training_product_dict and row[2 not in test_products]:
-                test_products[row[2]] = training_product_dict[row[2]]
-            elif row[2] not in test_products:
-                product_count += 1
-                test_products[row[2]] = product_count
+            if row[1] not in test_user_dict:
+                test_user_dict[row[1]] = test_user_count
+                test_user_count += 1
+            if row[2] not in test_product_dict:
+                test_product_dict[row[2]] = test_product_count
+                test_product_count += 1
 
-    return test_users, test_products
+    return test_user_dict, test_product_dict
 
 
 ##########################################################
@@ -227,13 +224,13 @@ def computeSVD(sparse_matrix, K):
 
 from scipy.sparse.linalg import * #used for matrix multiplication
 
-def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, K, test, num_user_ids, num_product_ids):
+def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, K, test):
     rightTerm = np.dot(S, Vt)
-    print('Right term shape: ')
-    print(rightTerm.shape)
-    print('-'*100)
+    # print('Right term shape: ')
+    # print(rightTerm.shape)
+    # print('-'*100)
 
-    estimated_ratings = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float16)
+    estimated_ratings = np.zeros(shape=(len(test_user_dict), len(test_product_dict)), dtype=np.float16)
     for idx, test_user in enumerate(test_user_dict):
         # print('Test user: ')
         # print(test_user)
@@ -249,14 +246,7 @@ def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, 
         recommendations = (-estimated_ratings[test_user_dict[test_user], :]).argsort()[:5]
         print('Recommendations: ')
         print(recommendations)
-    #    for r in recommendations:
-    #        if r not in test_product_dict[test_user]:
-    #             test_user_dict[test_user].append(r)
-    #
-    #             if len(uTest[userTest]) == 5:
-    #                 break
-    #
-    # return uTest
+
     return None
 
 
@@ -285,8 +275,7 @@ U, S, Vt = computeSVD(sparse_matrix, 90)
 # recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
 #                                         reviewer_product_dataframe)
 # convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
-estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, user_dict, product_dict, 90, True, num_user_ids,
-                                              num_product_ids)
+estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, user_dict, product_dict, 90, True)
 
 
 ####################################
