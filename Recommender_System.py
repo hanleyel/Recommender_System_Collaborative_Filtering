@@ -89,7 +89,7 @@ def readUrm(filename, user_dict, product_dict):
             urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
 
     # return csr_matrix(urm, dtype=np.float32)
-    return scipy.sparse.csc_matrix(urm, dtype=np.float32)
+    return scipy.sparse.csc_matrix(urm, dtype=np.float32), num_user_ids, num_product_ids
 
 ########################################################
 #####     CONVERTING DATAFRAME TO A CSR MATRIX     #####
@@ -221,16 +221,48 @@ def computeSVD(sparse_matrix, K):
     return U, S, Vt
 
 
-######################################################
-#####     MAKING PREDICTIONS FROM SVD MATRIX     #####
-######################################################
+##############################################################
+#####     MAKING RATINGS PREDICTIONS FROM SVD MATRIX     #####
+##############################################################
 
-# Merge datasets and calculate predicted ratings?
+from scipy.sparse.linalg import * #used for matrix multiplication
+
+def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, K, test, num_user_ids, num_product_ids):
+    rightTerm = np.dot(S, Vt)
+    print('Right term shape: ')
+    print(rightTerm.shape)
+    print('-'*100)
+
+    estimated_ratings = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float16)
+    for idx, test_user in enumerate(test_user_dict):
+        # print('Test user: ')
+        # print(test_user)
+        prod = U[test_user_dict[test_user], :]*rightTerm
+        # print('Product shape: ')
+        # print(prod.shape)
+
+        # Converts the vector to dense format to get indices of products with highest predicted ratings.
+        estimated_ratings[test_user_dict[test_user], :] = prod.todense()
+        # print(estimated_ratings)
+
+        # Gets indexes of top 5 (or specified number) of product recommendations.
+        recommendations = (-estimated_ratings[test_user_dict[test_user], :]).argsort()[:5]
+        print('Recommendations: ')
+        print(recommendations)
+    #    for r in recommendations:
+    #        if r not in test_product_dict[test_user]:
+    #             test_user_dict[test_user].append(r)
+    #
+    #             if len(uTest[userTest]) == 5:
+    #                 break
+    #
+    # return uTest
+    return None
 
 
-#####################################
-#####     RUNNING FUNCTIONS     #####
-#####################################
+########################
+#####     MAIN     #####
+########################
 
 # unzipped_data = unzip_json('reviews.training.json.gz')
 # training_data = json_to_df('reviews.training.json')
@@ -241,9 +273,9 @@ def computeSVD(sparse_matrix, K):
 # reviewer_product_dataframe = reviewer_product_matrix[1]
 
 user_dict, product_dict = create_user_product_dicts('reviews.training.csv')
-test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
-# sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
-# U, S, Vt = computeSVD(sparse_matrix, 90)
+# test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
+sparse_matrix, num_user_ids, num_product_ids = readUrm('reviews.training.csv', user_dict, product_dict)
+U, S, Vt = computeSVD(sparse_matrix, 90)
 
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
@@ -253,6 +285,8 @@ test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabe
 # recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
 #                                         reviewer_product_dataframe)
 # convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
+estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, user_dict, product_dict, 90, True, num_user_ids,
+                                              num_product_ids)
 
 
 ####################################
@@ -280,10 +314,10 @@ test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabe
 # print('Sparse matrix')
 # print(sparse_matrix)
 # print('U')
-# print(U)
+# print(U.shape)
 # print('S')
-# print(S)
+# print(S.shape)
 # print('Vt')
-# print(Vt)
+# print(Vt.shape)
 
-print(test_user_thing)
+print(estimated_ratings)
