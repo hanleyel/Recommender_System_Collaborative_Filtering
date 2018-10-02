@@ -82,8 +82,8 @@ def readUrm(filename, user_dict, product_dict):
     print(num_product_ids)
 
     urm = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
-    with open(filename, 'r') as trainFile:
-        urmReader = csv.reader(trainFile, delimiter=',')
+    with open(filename, 'r') as train_file:
+        urmReader = csv.reader(train_file, delimiter=',')
         next(urmReader, None)
         for row in urmReader:
             urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
@@ -140,6 +140,40 @@ def readUrm(filename, user_dict, product_dict):
 #             print('{0}: {1}, with distance of {2}:'.format(i, dataframe.index[indices.flatten()[i]], distances
 #                                                            .flatten()[i]))
 #     return None
+
+
+############################################
+#####     GET TEST USERS, PRODUCTS     #####
+############################################
+
+# Outputs dictionaries with unique test users and test products.
+# Keys are user and product IDs, values are counts that map to the training data (in the case of already seen IDs;
+# otherwise values are unique).
+def get_test_users_products(filename, training_user_dict, training_product_dict):
+
+    user_count = len(training_user_dict)
+    product_count = len(training_product_dict)
+    test_users = {}
+    test_products = {}
+
+    with open(filename, 'r') as test_file:
+        test_reader = csv.reader(test_file, delimiter=',')
+        next(test_reader, None)
+        for row in test_reader:
+            # Add unique users to test_user dictionary.
+            if row[1] in training_user_dict and row[1 not in test_users]:
+                test_users[row[1]] = training_user_dict[row[1]]
+            elif row[1] not in test_users:
+                user_count += 1
+                test_users[row[1]] = user_count
+            # Add unique products to test_product dictionary.
+            if row[2] in training_product_dict and row[2 not in test_products]:
+                test_products[row[2]] = training_product_dict[row[2]]
+            elif row[2] not in test_products:
+                product_count += 1
+                test_products[row[2]] = product_count
+
+    return test_users, test_products
 
 
 ##########################################################
@@ -200,13 +234,17 @@ def computeSVD(sparse_matrix, K):
 
 # unzipped_data = unzip_json('reviews.training.json.gz')
 # training_data = json_to_df('reviews.training.json')
+# test_data = json_to_df('reviews.test.unlabeled.csv')
 # convert_to_csv(training_data[['reviewerID', 'asin', 'overall']], 'reviews.training.csv')
 # reviewer_product_matrix = create_reviewer_product_matrix(training_data)
 # reviewer_product_sparse = reviewer_product_matrix[0]
 # reviewer_product_dataframe = reviewer_product_matrix[1]
-user_dict = create_user_product_dicts('reviews.training.csv')
-sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
-U, S, Vt = computeSVD(sparse_matrix, 90)
+
+user_dict, product_dict = create_user_product_dicts('reviews.training.csv')
+test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
+# sparse_matrix = readUrm('reviews.training.csv', user_dict[0], user_dict[1])
+# U, S, Vt = computeSVD(sparse_matrix, 90)
+
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
 # de_meaned_matrix = de_mean(reviewer_product_matrix[1])
@@ -238,11 +276,14 @@ U, S, Vt = computeSVD(sparse_matrix, 90)
 # print(recomposed_matrix)
 # print(user_dict[0])
 # print(user_dict[1])
-print('Sparse matrix')
-print(sparse_matrix)
-print('U')
-print(U)
-print('S')
-print(S)
-print('Vt')
-print(Vt)
+
+# print('Sparse matrix')
+# print(sparse_matrix)
+# print('U')
+# print(U)
+# print('S')
+# print(S)
+# print('Vt')
+# print(Vt)
+
+print(test_user_thing)
