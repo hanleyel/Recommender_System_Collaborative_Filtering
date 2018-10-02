@@ -15,6 +15,7 @@ import math
 #######################################
 
 def unzip_json(filename):
+    print('Unzipping json file...')
     unzipped_data = pd.read_json(gzip.open(filename))
     return unzipped_data
 
@@ -26,11 +27,14 @@ def unzip_json(filename):
 # Output json training data as a Pandas dataframe.
 def json_to_df(file_name):
 
+    print('Converting json file to dataframe...')
+
     try:
         training_data = pd.read_json(file_name, lines=True)
         return training_data
     except:
         print('Please try another file name.')
+
         return None
 
 
@@ -39,10 +43,14 @@ def json_to_df(file_name):
 # saving purposes while I was setting up my dataframe and matrices.
 def convert_to_csv(dataframe, desired_filename):
 
+    print('Converting dataframe to csv: ' + desired_filename + '...')
+
     try:
         return dataframe.to_csv(desired_filename, index=False)
     except:
         print('Please try another dataframe or file name.')
+
+    return None
 
 
 
@@ -53,6 +61,8 @@ def convert_to_csv(dataframe, desired_filename):
 
 # Returns dictionaries with unique users and products as keys and unique ints as values.
 def create_user_product_dicts(filename):
+
+    print('Creating dictionaries from CSV for unique users and products...')
 
     user_dict = {}
     product_dict = {}
@@ -76,6 +86,8 @@ def create_user_product_dicts(filename):
 
 
 def readUrm(filename, user_dict, product_dict):
+
+    print('Creating a sparse matrix from rating data...')
 
     num_user_ids = len(user_dict)
     print(num_user_ids)
@@ -150,6 +162,8 @@ def readUrm(filename, user_dict, product_dict):
 # Outputs dictionaries with unique test users and test products.
 def get_test_users_products(filename, training_user_dict, training_product_dict):
 
+    print('Importing test users and products...')
+
     # test_user_count = len(training_user_dict)
     # test_product_count = len(training_product_dict)
     test_user_count = 0
@@ -204,6 +218,9 @@ def get_test_users_products(filename, training_user_dict, training_product_dict)
 ########################################################################
 
 def computeSVD(sparse_matrix, K):
+
+    print('Computing SVD matrix...')
+
     U, s, Vt = sparsesvd(sparse_matrix, K)
 
     dim = (len(s), len(s))
@@ -224,28 +241,41 @@ def computeSVD(sparse_matrix, K):
 
 from scipy.sparse.linalg import * #used for matrix multiplication
 
-def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, K, test):
+def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, K, test, user_dict, product_dict):
+
+    print('Computing estimated ratings and writing to CSV...')
+
     rightTerm = np.dot(S, Vt)
     # print('Right term shape: ')
     # print(rightTerm.shape)
     # print('-'*100)
 
-    estimated_ratings = np.zeros(shape=(len(test_user_dict), len(test_product_dict)), dtype=np.float16)
-    for idx, test_user in enumerate(test_user_dict):
-        # print('Test user: ')
-        # print(test_user)
-        prod = U[test_user_dict[test_user], :]*rightTerm
-        # print('Product shape: ')
-        # print(prod.shape)
+    estimated_ratings = np.zeros(shape=(len(user_dict), len(product_dict)), dtype=np.float16)
 
-        # Converts the vector to dense format to get indices of products with highest predicted ratings.
-        estimated_ratings[test_user_dict[test_user], :] = prod.todense()
-        # print(estimated_ratings)
+    with open('reviews.test.unlabeled.csv', 'r') as test_file:
+        test_reader=csv.reader(test_file, delimiter=',')
+        next(test_reader, None)
+        with open('reviews.test.labeled.csv', 'w') as write_file:
+            test_writer=csv.writer(write_file, delimiter=',')
+            test_writer.writerow(['datapointID', 'overall'])
 
-        # Gets indexes of top 5 (or specified number) of product recommendations.
-        recommendations = (-estimated_ratings[test_user_dict[test_user], :]).argsort()[:5]
-        print('Recommendations: ')
-        print(recommendations)
+            # for idx, test_user in enumerate(test_user_dict):
+            for row in test_reader:
+                # print('Test user: ')
+                # print(test_user)
+                prod = U[test_user_dict[row[1]], :]*rightTerm
+                # print('Product shape: ')
+                # print(prod.shape)
+
+                # Converts the vector to dense format to get indices of products with highest predicted ratings.
+                estimated_ratings[test_user_dict[row[1]], :] = prod.todense()
+                # print(estimated_ratings)
+
+                # Gets indexes of top 5 (or specified number) of product recommendations.
+                # recommendations = (-estimated_ratings[test_user_dict[row[1]], :]).argsort()[:5]
+                predicted_rating = (-estimated_ratings[test_user_dict[row[1]], test_product_dict[row[2]]])
+                # print('Predicted rating: ')
+                test_writer.writerow([row[0], predicted_rating])
 
     return None
 
@@ -263,7 +293,7 @@ def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, 
 # reviewer_product_dataframe = reviewer_product_matrix[1]
 
 user_dict, product_dict = create_user_product_dicts('reviews.training.csv')
-# test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
+test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
 sparse_matrix, num_user_ids, num_product_ids = readUrm('reviews.training.csv', user_dict, product_dict)
 U, S, Vt = computeSVD(sparse_matrix, 90)
 
@@ -275,7 +305,8 @@ U, S, Vt = computeSVD(sparse_matrix, 90)
 # recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
 #                                         reviewer_product_dataframe)
 # convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
-estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, user_dict, product_dict, 90, True)
+estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, test_user_dict, test_product_dict, 90, True, user_dict,
+                                              product_dict)
 
 
 ####################################
