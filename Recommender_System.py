@@ -102,7 +102,7 @@ def readUrm(filename, user_dict, product_dict):
             urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
 
     # return csr_matrix(urm, dtype=np.float32)
-    return scipy.sparse.csc_matrix(urm, dtype=np.float32), num_user_ids, num_product_ids
+    return scipy.sparse.csc_matrix(urm, dtype=np.float32), num_user_ids, num_product_ids, urm
 
 ########################################################
 #####     CONVERTING DATAFRAME TO A CSR MATRIX     #####
@@ -164,10 +164,10 @@ def get_test_users_products(filename, training_user_dict, training_product_dict)
 
     print('Importing test users and products...')
 
-    # test_user_count = len(training_user_dict)
-    # test_product_count = len(training_product_dict)
-    test_user_count = 0
-    test_product_count = 0
+    test_user_count = len(training_user_dict)
+    test_product_count = len(training_product_dict)
+    # test_user_count = 0
+    # test_product_count = 0
     test_user_dict = {}
     test_product_dict = {}
 
@@ -177,12 +177,17 @@ def get_test_users_products(filename, training_user_dict, training_product_dict)
 
         for row in test_reader:
             # Add unique users to test_user dictionary.
-            if row[1] not in test_user_dict:
-                test_user_dict[row[1]] = test_user_count
+            if row[1] in training_user_dict and row[1 not in test_user_dict]:
+                test_user_dict[row[1]] = training_user_dict[row[1]]
+            elif row[1] not in test_user_dict:
                 test_user_count += 1
-            if row[2] not in test_product_dict:
-                test_product_dict[row[2]] = test_product_count
+                test_user_dict[row[1]] = test_user_count
+            # Add unique products to test_product dictionary.
+            if row[2] in training_product_dict and row[2 not in test_product_dict]:
+                test_product_dict[row[2]] = training_product_dict[row[2]]
+            elif row[2] not in test_product_dict:
                 test_product_count += 1
+                test_product_dict[row[2]] = test_product_count
 
     return test_user_dict, test_product_dict
 
@@ -252,33 +257,95 @@ def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, 
 
     estimated_ratings = np.zeros(shape=(len(user_dict), len(product_dict)), dtype=np.float16)
 
-    with open('reviews.test.unlabeled.csv', 'r') as test_file:
-        test_reader=csv.reader(test_file, delimiter=',')
+    with open('reviews.dev.csv', 'r') as test_file:
+        test_reader = csv.reader(test_file, delimiter=',')
         next(test_reader, None)
         with open('reviews.test.labeled.csv', 'w') as write_file:
-            test_writer=csv.writer(write_file, delimiter=',')
+            test_writer = csv.writer(write_file, delimiter=',')
             test_writer.writerow(['datapointID', 'overall'])
 
             # for idx, test_user in enumerate(test_user_dict):
             for row in test_reader:
-                # print('Test user: ')
-                # print(test_user)
-                prod = U[test_user_dict[row[1]], :]*rightTerm
-                # print('Product shape: ')
-                # print(prod.shape)
+                print('Test user: ')
+                print(row[0])
+                try:
+                    prod = np.dot(U[user_dict[row[0]], :], rightTerm)
+                    print('is in user dict')
+                    # print('Product shape: ')
+                    # print(prod.shape)
 
-                # Converts the vector to dense format to get indices of products with highest predicted ratings.
-                estimated_ratings[test_user_dict[row[1]], :] = prod.todense()
-                # print(estimated_ratings)
+                    # Converts the vector to dense format to get indices of products with highest predicted ratings.
+                    estimated_ratings[user_dict[row[0]], :] = prod.todense()
+                    # print(estimated_ratings)
 
-                # Gets indexes of top 5 (or specified number) of product recommendations.
-                # recommendations = (-estimated_ratings[test_user_dict[row[1]], :]).argsort()[:5]
-                predicted_rating = (-estimated_ratings[test_user_dict[row[1]], test_product_dict[row[2]]])
-                # print('Predicted rating: ')
-                test_writer.writerow([row[0], predicted_rating])
+                    # Gets indexes of top 5 (or specified number) of product recommendations.
+                    # recommendations = (-estimated_ratings[test_user_dict[row[1]], :]).argsort()[:5]
+                    try:
+                        predicted_rating = (estimated_ratings[user_dict[row[0]], product_dict[row[1]]])
+                        print('is in product dict')
+                        print('Predicted rating: ')
+                        print(predicted_rating)
+                        # test_writer.writerow([row[0], predicted_rating])
+                    except:
+                        print('is not in product dict')
+                except:
+                    print('is not in user dict')
+                    pass
 
     return None
 
+########################################################################
+#####     ALTERNATE MAKING RATINGS PREDICTIONS FROM SVD MATRIX     #####
+########################################################################
+
+
+def recompose_matrix(U, S, Vt, test_user_dict):
+
+    print('Computing estimated ratings and writing to CSV...')
+
+    rightTerm = np.dot(S, Vt)
+    # print('Right term shape: ')
+    # print(rightTerm.shape)
+    # print('-'*100)
+
+    estimated_ratings = np.zeros(shape=(len(user_dict), len(product_dict)), dtype=np.float16)
+
+    with open('reviews.dev.csv', 'r') as test_file:
+        test_reader = csv.reader(test_file, delimiter=',')
+        next(test_reader, None)
+        with open('reviews.test.labeled.csv', 'w') as write_file:
+            test_writer = csv.writer(write_file, delimiter=',')
+            test_writer.writerow(['datapointID', 'overall'])
+
+            # for idx, test_user in enumerate(test_user_dict):
+            for row in test_reader:
+                print('Test user: ')
+                print(row[0])
+                try:
+                    prod = np.dot(U[user_dict[row[0]], :], rightTerm)
+                    print('is in user dict')
+                    # print('Product shape: ')
+                    # print(prod.shape)
+
+                    # Converts the vector to dense format to get indices of products with highest predicted ratings.
+                    estimated_ratings[user_dict[row[0]], :] = prod.todense()
+                    # print(estimated_ratings)
+
+                    # Gets indexes of top 5 (or specified number) of product recommendations.
+                    # recommendations = (-estimated_ratings[test_user_dict[row[1]], :]).argsort()[:5]
+                    try:
+                        predicted_rating = (estimated_ratings[user_dict[row[0]], product_dict[row[1]]])
+                        print('is in product dict')
+                        print('Predicted rating: ')
+                        print(predicted_rating)
+                        # test_writer.writerow([row[0], predicted_rating])
+                    except:
+                        print('is not in product dict')
+                except:
+                    print('is not in user dict')
+                    pass
+
+    return None
 
 ########################
 #####     MAIN     #####
@@ -293,8 +360,16 @@ def compute_estimated_ratings(urm, U, S, Vt, test_user_dict, test_product_dict, 
 # reviewer_product_dataframe = reviewer_product_matrix[1]
 
 user_dict, product_dict = create_user_product_dicts('reviews.training.csv')
+print('user')
+print(user_dict['AT79BAVA063DG'])
+print(product_dict['B0009UVCQC'])
 test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
-sparse_matrix, num_user_ids, num_product_ids = readUrm('reviews.training.csv', user_dict, product_dict)
+print('test user')
+print(test_user_dict['AT79BAVA063DG'])
+print(test_product_dict['B0009UVCQC'])
+sparse_matrix, num_user_ids, num_product_ids, urm = readUrm('reviews.training.csv', user_dict, product_dict)
+print('matrix')
+print(urm[user_dict['AMFIPCYDYWGVT'], product_dict['B0090SI56Y']])
 U, S, Vt = computeSVD(sparse_matrix, 90)
 
 # model_knn = k_nn(reviewer_product_sparse)
@@ -305,8 +380,9 @@ U, S, Vt = computeSVD(sparse_matrix, 90)
 # recomposed_matrix = re_compose_matrices(rp_svd[0], rp_svd[1][0], rp_svd[2], de_meaned_matrix[1],
 #                                         reviewer_product_dataframe)
 # convert_to_csv(recomposed_matrix, 'recomposed_matrix.csv')
-estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, test_user_dict, test_product_dict, 90, True, user_dict,
-                                              product_dict)
+# estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, test_user_dict, test_product_dict, 90, True, user_dict,
+#                                               product_dict)
+# recomposed_matrix = recompose_matrix(U, S, Vt)
 
 
 ####################################
@@ -340,4 +416,5 @@ estimated_ratings = compute_estimated_ratings(sparse_matrix, U, S, Vt, test_user
 # print('Vt')
 # print(Vt.shape)
 
-print(estimated_ratings)
+# print(estimated_ratings)
+#print(recomposed_matrix)
