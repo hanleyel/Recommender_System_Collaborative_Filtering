@@ -6,6 +6,7 @@ import scipy
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import normalize
 import csv
 from sparsesvd import sparsesvd
 import math
@@ -85,22 +86,25 @@ def create_user_product_dicts(filename):
 
 def readUrm(filename, user_dict, product_dict):
 
-    print('Creating a sparse matrix from rating data...')
+    print('Creating a first dense matrix from rating data...')
 
     num_user_ids = len(user_dict)
-    print(num_user_ids)
+    # print(num_user_ids)
     num_product_ids = len(product_dict)
-    print(num_product_ids)
+    # print(num_product_ids)
 
     urm = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
+
     with open(filename, 'r') as train_file:
         urmReader = csv.reader(train_file, delimiter=',')
         next(urmReader, None)
         for row in urmReader:
             urm[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
 
-    # return csr_matrix(urm, dtype=np.float32)
-    return scipy.sparse.csc_matrix(urm, dtype=np.float32), num_user_ids, num_product_ids, urm
+    print('Creating a sparse CSR matrix from dense rating matrix data...')
+    urm_sparse_csr = scipy.sparse.csr_matrix(urm, dtype=np.float32)
+
+    return urm_sparse_csr, num_user_ids, num_product_ids, urm
 
 
 ####################################################
@@ -186,8 +190,12 @@ def computeSVD(sparse_matrix, K):
     for i in range(0, len(s)):
         S[i,i] = math.sqrt(s[i])
 
+    # Don't need to do this as a csr again
     U = csr_matrix(np.transpose(U), dtype=np.float32)
     S = csr_matrix(S, dtype=np.float32)
+
+
+    # This is typically the part we transpose
     Vt = csr_matrix(Vt, dtype=np.float32)
 
     return U, S, Vt
@@ -204,25 +212,21 @@ def recompose_matrix(U, S, Vt, user_dict, product_dict):
     rightTerm = np.dot(S, Vt)
     estimated_ratings = np.zeros(shape=(len(user_dict), len(product_dict)), dtype=np.float16)
 
-    prod = np.dot(U[user_dict['AMFIPCYDYWGVT'], :], rightTerm)
-    estimated_ratings[user_dict['AMFIPCYDYWGVT'], :] = prod.todense()
-    predicted_rating = (estimated_ratings[user_dict['AMFIPCYDYWGVT'], product_dict['B0090SI56Y']])
-    print('Predicted rating: AMFIPCYDYWGVT')
-    print(predicted_rating)
+    with open('reviews.training.csv', 'r') as test_file:
+        test_reader = csv.reader(test_file, delimiter=',')
+        next(test_reader, None)
+        with open('reviews.test.labeled.csv', 'w') as outfile:
+            outfile_reader = csv.writer(outfile, delimiter=',')
+            outfile_reader.writerow(['userID', 'actual overall', 'predicted'])
 
-    prod = np.dot(U[user_dict['A3G602Z4DWDZKS'], :], rightTerm)
-    estimated_ratings[user_dict['A3G602Z4DWDZKS'], :] = prod.todense()
-    predicted_rating = (estimated_ratings[user_dict['A3G602Z4DWDZKS'], product_dict['B00005JL99']])
-    print('Predicted rating: A3G602Z4DWDZKS')
-    print(predicted_rating)
+            for row in test_reader:
+                prod = np.dot(U[user_dict[row[0]], :], rightTerm)
+                estimated_ratings[user_dict[row[0]], :] = prod.todense()
+                predicted_rating = (estimated_ratings[user_dict[row[0]], product_dict[row[1]]])
+                outfile_reader.writerow([row[0], row[2], predicted_rating])
 
-    prod = np.dot(U[user_dict['AAAAJPG5Z1TLS'], :], rightTerm)
-    estimated_ratings[user_dict['AAAAJPG5Z1TLS'], :] = prod.todense()
-    predicted_rating = (estimated_ratings[user_dict['AAAAJPG5Z1TLS'], product_dict['6300984869']])
-    print('Predicted rating: AAAAJPG5Z1TLS')
-    print(predicted_rating)
+    return estimated_ratings
 
-    return estimated_ratings, predicted_rating
 
 ########################
 #####     MAIN     #####
@@ -232,12 +236,13 @@ def recompose_matrix(U, S, Vt, user_dict, product_dict):
 user_dict, product_dict = create_user_product_dicts('reviews.training.csv')
 test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
 sparse_matrix, num_user_ids, num_product_ids, urm = readUrm('reviews.training.csv', user_dict, product_dict)
-U, S, Vt = computeSVD(sparse_matrix, 90)
+U, S, Vt = computeSVD(sparse_matrix.tocsc(), 90)
 
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
 
 estimated_ratings, predicted_rating = recompose_matrix(U, S, Vt, user_dict, product_dict)
+
 
 ####################################
 #####     PRINT STATEMENTS     #####
@@ -291,9 +296,3 @@ print('Vt')
 print(Vt.shape)
 print(Vt)
 print('\n')
-
-print('Recomposed matrix/estimated ratings: ')
-print(estimated_ratings)
-print('\n')
-print('Predicted rating: ')
-print(predicted_rating)
