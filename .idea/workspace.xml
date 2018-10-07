@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9e29b6b-1f71-4630-a905-f4b2d5a3c3f1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Recommender_System_Collaborative_Filtering_From_Scratch-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Recommender_System_Collaborative_Filtering_From_Scratch-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" afterPath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reviews.training.shortened.csv" afterPath="$PROJECT_DIR$/reviews.training.shortened.csv" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -60,11 +60,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reviews.test.unlabeled.csv" pinned="false" current-in-tab="true">
+      <file leaf-file-name="reviews.test.unlabeled.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-430446">
               <caret line="1" column="47" lean-forward="false" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reviews.training.shortened.csv" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reviews.training.shortened.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -124,6 +134,7 @@
         <option value="$PROJECT_DIR$/Recommender_System.py" />
         <option value="$PROJECT_DIR$/reconstructed.normalized.products.txt" />
         <option value="$PROJECT_DIR$/reviews.test.labeled.csv" />
+        <option value="$PROJECT_DIR$/reviews.training.shortened.csv" />
       </list>
     </option>
   </component>
@@ -263,7 +274,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="23" width="1341" height="829" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2147806" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -567,6 +577,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-430446">
           <caret line="1" column="47" lean-forward="false" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.training.shortened.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
