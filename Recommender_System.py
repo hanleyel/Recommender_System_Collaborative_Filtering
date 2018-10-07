@@ -82,49 +82,45 @@ def create_user_product_dicts(filename):
                 product_dict[row[1]] = product_count
                 product_count += 1
 
-    print('Len user and product dicts')
-    print(len(user_dict))
-    print(len(product_dict))
-    # print(product_dict)
-
-    print('Getting largest values')
-    print('Users: ')
-    lg_user = max(user_dict.items(), key=operator.itemgetter(1))[0]
-    print(lg_user)
-    print(user_dict[lg_user])
-    print('Products: ')
-    lg_prod = max(product_dict.items(), key=operator.itemgetter(1))[0]
-    print(lg_prod)
-    print(product_dict[lg_prod])
-
-    print('User and items end counts')
-    print('users:')
-    print(user_count)
-    print('products: ')
-    print(product_count)
-
-    print('dict lengths:')
-    print('user')
-    print(len(user_dict))
-    print('products: ')
-    print(len(product_dict))
-
     return user_dict, product_dict, user_count, product_count
+
+
+############################################################
+#####     CONVERTING TRAINING DATA TO DENSE MATRIX     #####
+############################################################
+
+def training_mtx(filename, user_dict, product_dict):
+
+    print('Creating a dense matrix from training data...')
+
+    num_user_ids = len(user_dict)
+    num_product_ids = len(product_dict)
+
+    dense_matrix = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
+
+    with open(filename, 'r') as train_file:
+        matrix_reader = csv.reader(train_file, delimiter=',')
+        next(matrix_reader, None)
+        for row in matrix_reader:
+            dense_matrix[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
+
+    print(dense_matrix.shape)
+
+    return dense_matrix
 
 
 ###########################################################################
 #####     LOADING AND STORING CSV TEST DATA AS INDEX DICTIONARIES     #####
 ###########################################################################
 
-# Outputs dictionaries with unique test users and test products.
-def get_test_users_products(filename, training_user_dict, training_product_dict, user_count, product_count):
+def get_test_users_products(filename, training_user_dict, training_product_dict):
 
     print('Importing test users and products...')
 
-    test_user_count = user_count
-    test_product_count = product_count
-    test_user_dict = training_user_dict
-    test_product_dict = training_product_dict
+    test_user_count = len(training_user_dict)
+    test_product_count = len(training_product_dict)
+    test_user_dict = training_user_dict.copy()
+    test_product_dict = training_product_dict.copy()
 
     with open(filename, 'r') as test_file:
         test_reader = csv.reader(test_file, delimiter=',')
@@ -132,85 +128,153 @@ def get_test_users_products(filename, training_user_dict, training_product_dict,
 
         for row in test_reader:
             # Add unique users to test_user dictionary.
+            # print(row[1])
             if row[1] not in test_user_dict:
                 test_user_dict[row[1]] = test_user_count
                 test_user_count += 1
             # Add unique products to test_product dictionary.
+            # print(row[2])
             if row[2] not in test_product_dict:
                 test_product_dict[row[2]] = test_product_count
                 test_product_count += 1
 
-    print('Len test dicts, user and product: ')
-    print(len(test_user_dict))
-    print(len(test_product_dict))
-    print('Len test user and product counts: ')
-    print(test_user_count)
-    print(test_product_count)
-    # print(test_user_dict)
-    # print(test_product_dict)
-
     return test_user_dict, test_product_dict
+
+# Outputs dictionaries with unique test users and test products.
+# def get_test_users_products(filename, training_user_dict, training_product_dict, user_count, product_count):
+#
+#     print('Importing test users and products...')
+#
+#     test_user_count = user_count
+#     test_product_count = product_count
+#     test_user_dict = training_user_dict
+#     test_product_dict = training_product_dict
+#
+#     with open(filename, 'r') as test_file:
+#         test_reader = csv.reader(test_file, delimiter=',')
+#         next(test_reader, None)
+#
+#         for row in test_reader:
+#             # Add unique users to test_user dictionary.
+#             if row[1] not in test_user_dict:
+#                 test_user_dict[row[1]] = test_user_count
+#                 test_user_count += 1
+#             # Add unique products to test_product dictionary.
+#             if row[2] not in test_product_dict:
+#                 test_product_dict[row[2]] = test_product_count
+#                 test_product_count += 1
+#
+#     print('Len test dicts, user and product: ')
+#     print(len(test_user_dict))
+#     print(len(test_product_dict))
+#     print('Len test user and product counts: ')
+#     print(test_user_count)
+#     print(test_product_count)
+#     # print(test_user_dict)
+#     # print(test_product_dict)
+#
+#     return test_user_dict, test_product_dict
 
 
 ############################################################
 #####     CREATING DENSE MATRIX WITH TRAINING DATA     #####
 ############################################################
 
-def training_mtx(filename, user_dict, product_dict):
+# def training_mtx(filename, user_dict, product_dict):
+#
+#         print('Creating a dense matrix from training data...')
+#
+#         num_user_ids = len(user_dict)
+#         num_product_ids = len(product_dict)
+#
+#         dense_matrix = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
+#
+#         with open(filename, 'r') as train_file:
+#             matrix_reader = csv.reader(train_file, delimiter=',')
+#             next(matrix_reader, None)
+#             for row in matrix_reader:
+#                 dense_matrix[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
+#
+#         print('training matrix shape: ')
+#         print(dense_matrix.shape)
+#         print(dense_matrix)
+#
+#         return dense_matrix
 
-        print('Creating a dense matrix from training data...')
 
-        num_user_ids = len(user_dict)
-        num_product_ids = len(product_dict)
+##############################################################################
+#####     CREATING DENSE MATRICES WITH MERGED TRAINING AND TEST DATA     #####
+##############################################################################
 
-        dense_matrix = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
-
-        with open(filename, 'r') as train_file:
-            matrix_reader = csv.reader(train_file, delimiter=',')
-            next(matrix_reader, None)
-            for row in matrix_reader:
-                dense_matrix[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
-
-        print('training matrix shape: ')
-        print(dense_matrix.shape)
-        print(dense_matrix)
-
-        return dense_matrix
-
-############################################################################
-#####     CREATING DENSE MATRIX WITH MERGED TRAINING AND TEST DATA     #####
-############################################################################
-
-def merged_mtx(test_file, train_file, test_user_dict, test_product_dict, user_dict,
-               product_dict):
-
+def merged_mtx(test_file, train_file, test_y_axis, test_x_axis, train_y_axis,
+               train_x_axis, test_y_axis_row_num, test_x_axis_row_num, train_y_axis_row_num, train_x_axis_row_num):
     print('Merging training and test data for ratings imputation...')
 
-    num_user_ids = len(test_user_dict)
-    num_product_ids = len(test_product_dict)
+    num_user_ids = len(user_dict)  # Training users only
+    num_product_ids = len(test_x_axis)  # Training and test products
 
     merged_matrix = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
 
+    print('Merged matrix shape: ')
+    print(merged_matrix.shape)
+
+    test_file_count = 0
+
     with open(test_file, 'r') as test_file:
-        file_reader=csv.reader(test_file, delimiter=',')
+        print('Opening test file...')
+        file_reader = csv.reader(test_file, delimiter=',')
         next(file_reader, None)
 
         for row in file_reader:
-            merged_matrix[test_user_dict[row[1]], test_product_dict[row[2]]] = float(0)
+            # print(row[1])
+            # print(test_product_dict[row[2]])
+
+            merged_matrix[:, test_x_axis[row[test_x_axis_row_num]]] = float(0)
+
+            print(str((test_file_count/123952)*100) + ' percent done.')
+            test_file_count += 1
 
     with open(train_file, 'r') as train_file:
-        file_reader=csv.reader(train_file, delimiter=',')
+        print('Opening training file')
+        file_reader = csv.reader(train_file, delimiter=',')
         next(file_reader, None)
 
         for row in file_reader:
-            merged_matrix[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
-
-    print('Merged matrix tests: ')
-    print(merged_matrix[[user_dict['A34DNO6UAH67Z0']],[product_dict['B000CDSS22']]]) # Should be 5
-    print(merged_matrix[[user_dict['A3APW42N5MRVWT']], [product_dict['6305186774']]]) # Should be 2
-    print(merged_matrix[[user_dict['A2M03PQV8R826Z']], [product_dict['B0000DKDUR']]]) # Should be 5
+            merged_matrix[train_y_axis[row[train_y_axis_row_num]], train_x_axis[row[train_x_axis_row_num]]] = float(
+                row[2])
 
     return merged_matrix
+
+# def merged_mtx(test_file, train_file, test_user_dict, test_product_dict, user_dict,
+#                product_dict):
+#
+#     print('Merging training and test data for ratings imputation...')
+#
+#     num_user_ids = len(test_user_dict)
+#     num_product_ids = len(test_product_dict)
+#
+#     merged_matrix = np.zeros(shape=(num_user_ids, num_product_ids), dtype=np.float32)
+#
+#     with open(test_file, 'r') as test_file:
+#         file_reader=csv.reader(test_file, delimiter=',')
+#         next(file_reader, None)
+#
+#         for row in file_reader:
+#             merged_matrix[test_user_dict[row[1]], test_product_dict[row[2]]] = float(0)
+#
+#     with open(train_file, 'r') as train_file:
+#         file_reader=csv.reader(train_file, delimiter=',')
+#         next(file_reader, None)
+#
+#         for row in file_reader:
+#             merged_matrix[user_dict[row[0]], product_dict[row[1]]] = float(row[2])
+#
+#     print('Merged matrix tests: ')
+#     print(merged_matrix[[user_dict['A34DNO6UAH67Z0']],[product_dict['B000CDSS22']]]) # Should be 5
+#     print(merged_matrix[[user_dict['A3APW42N5MRVWT']], [product_dict['6305186774']]]) # Should be 2
+#     print(merged_matrix[[user_dict['A2M03PQV8R826Z']], [product_dict['B0000DKDUR']]]) # Should be 5
+#
+#     return merged_matrix
 
 
 ########################################
@@ -218,28 +282,67 @@ def merged_mtx(test_file, train_file, test_user_dict, test_product_dict, user_di
 ########################################
 
 def normalize_merged_matrix(matrix):
-
     print('Calculating ratings mean...')
-    # matrix_mean = np.mean(matrix, axis=1)
+    matrix_mean = np.mean(matrix, axis=1)
     matrix_row_mean = np.true_divide(matrix.sum(1), (matrix != 0).sum(1))
+    matrix_row_mean = np.nan_to_num(matrix_row_mean)
+    print('Matrix row mean: ')
+    print(matrix_row_mean[0])
 
-    # matrix_mean_test = np.mean(matrix[matrix > 0])
-    # print(matrix_mean_test)
-    # matrix_mean = matrix.sum(1)/(matrix!=0).sum(1).astype(float)
+    matrix_column_mean = np.true_divide(matrix.sum(0), (matrix != 0).sum(0))
+    matrix_column_mean = np.nan_to_num(matrix_column_mean)
+    print('matrix column mean: ')
+    print(matrix_column_mean[951])
+
+    matrix_mean_test = np.mean(matrix[matrix > 0])
+    print(matrix_mean_test)
+    matrix_mean = matrix.sum(1) / (matrix != 0).sum(1).astype(float)
 
     global_mean = np.mean(matrix)
+    global_mean = np.true_divide(matrix.sum(), (matrix != 0).sum())
+    print('Global mean: ')
+    print(global_mean)
 
     print('Normalizing the data...')
     normalized_matrix = matrix - matrix_row_mean.reshape(-1, 1)
+    print('Normalized matrix: ')
+    print(normalized_matrix)
 
     print('Test normalized mean value: ')
     print(matrix_row_mean[0])
 
+    print('Test column value: ')
+    print(matrix_column_mean[951])
+
     print('Fill nan with 0')
-    print()
+    normalized_matrix = np.nan_to_num(normalized_matrix)
+    print(normalized_matrix)
 
+    return normalized_matrix, matrix_row_mean, matrix_column_mean, global_mean
 
-    return normalized_matrix, matrix_row_mean, global_mean
+# def normalize_merged_matrix(matrix):
+#
+#     print('Calculating ratings mean...')
+#     # matrix_mean = np.mean(matrix, axis=1)
+#     matrix_row_mean = np.true_divide(matrix.sum(1), (matrix != 0).sum(1))
+#
+#     # matrix_mean_test = np.mean(matrix[matrix > 0])
+#     # print(matrix_mean_test)
+#     # matrix_mean = matrix.sum(1)/(matrix!=0).sum(1).astype(float)
+#
+#     global_mean = np.mean(matrix)
+#
+#     print('Normalizing the data...')
+#     normalized_matrix = matrix - matrix_row_mean.reshape(-1, 1)
+#
+#     print('Test normalized mean value: ')
+#     print(matrix_row_mean[0])
+#
+#     print('Fill nan with 0')
+#     print()
+#
+#
+#     return normalized_matrix, matrix_row_mean, global_mean
 
 ####################################################################
 #####     LOADING AND STORING CSV DATA AS DE-MEANED MATRIX     #####
@@ -340,6 +443,15 @@ def compute_svd_from_demeaned(urm_demeaned):
 
     return U, S, Vt
 
+# def compute_svd_from_demeaned(urm_demeaned):
+#
+#     print('Computing svd from de-meaned matrix...')
+#
+#     U, sigma, Vt = svds(urm_demeaned, k = 100)
+#     S = np.diag(sigma)
+#
+#     return U, S, Vt
+
 
 #####################################################################
 #####     MAKING RATINGS PREDICTIONS FROM SPARSE SVD MATRIX     #####
@@ -394,35 +506,85 @@ def compute_svd_from_demeaned(urm_demeaned):
 #####     ALTERNATE MAKE RATINGS PREDICTIONS FROM DEMEANED SVD MATRIX     #####
 ###############################################################################
 
-def reconstruct_demeaned_matrix(U, S, Vt, urm_mean, testing_file, outfile, test_user_dict, test_product_dict):
+def reconstruct_demeaned_matrix(test_file, prediction_file, test_user_dict, test_product_dict,
+                                U_products, S_products, Vt_products, U_users, S_users, Vt_users,
+                                matrix_row_mean_products, matrix_row_mean_users):
 
     print('Reconstructing matrix and making predictions...')
 
-    predicted_ratings = (np.dot(np.dot(U, S), Vt) + urm_mean.reshape(-1, 1))
+    #     print(len(test_user_dict))
+    #     print(len(test_product_dict))
 
-    print('Predicted ratings')
-    print(predicted_ratings)
+    right_term_products = np.dot(S_products, Vt_products)
+    right_term_users = np.dot(S_users, Vt_users)
 
-    with open(testing_file, 'r') as test_file:
+    with open(test_file, 'r') as test_file:
         test_reader = csv.reader(test_file, delimiter=',')
         next(test_reader, None)
-        with open(outfile, 'w') as outfile:
+        with open(prediction_file, 'w') as outfile:
             outfile_reader = csv.writer(outfile, delimiter=',')
             outfile_reader.writerow(['datapointID', 'overall'])
 
             for row in test_reader:
 
-                prediction = predicted_ratings[test_user_dict[row[1]], [test_product_dict[row[2]]]]
+                try:
+                    # Query by user.
+                    user_query = np.dot(right_term_products.T, U_products[test_user_dict[row[0]], :].T)
+                    prediction = -user_query[test_product_dict[row[1]]]
+                    outfile_reader.writerow([row[0], prediction])
+                # print('Query by USER')
+                #                     print(row[1])
+                #                     print(prediction)
+                except:
+                    try:
+                        # Query by product.
+                        product_query = np.dot(right_term_users.T, U_users[test_product_dict[row[1]], :].T)
+                        prediction = -product_query[test_user_dict[row[0]]]
+                        outfile_reader.writerow([row[0], prediction])
+                    # print('Query by PRODUCT')
+                    #                         print(row[1])
+                    #                         print(prediction)
+                    except:
+                        # If no matching users or products are found, make prediction based on global mean.
+                        prediction = global_mean
+                        outfile_reader.writerow([row[0], prediction])
+                        #                         print('No matching query: GLOBAL MEAN')
+                        #                         print(row[1])
+                        #                         print(prediction)
 
-                # if prediction[0] > 5:
-                #     prediction[0] = 5
-                #
-                # if prediction[0] < 1:
-                #     prediction[0] = 1
+    print('Done.')
 
-                outfile_reader.writerow([row[0], prediction[0]])
+    return None
 
-    return predicted_ratings[[user_dict['A3APW42N5MRVWT']], [product_dict['6305186774']]]
+# def reconstruct_demeaned_matrix(U, S, Vt, urm_mean, testing_file, outfile, test_user_dict, test_product_dict):
+#
+#     print('Reconstructing matrix and making predictions...')
+#
+#     predicted_ratings = (np.dot(np.dot(U, S), Vt) + urm_mean.reshape(-1, 1))
+#
+#     print('Predicted ratings')
+#     print(predicted_ratings)
+#
+#     with open(testing_file, 'r') as test_file:
+#         test_reader = csv.reader(test_file, delimiter=',')
+#         next(test_reader, None)
+#         with open(outfile, 'w') as outfile:
+#             outfile_reader = csv.writer(outfile, delimiter=',')
+#             outfile_reader.writerow(['datapointID', 'overall'])
+#
+#             for row in test_reader:
+#
+#                 prediction = predicted_ratings[test_user_dict[row[1]], [test_product_dict[row[2]]]]
+#
+#                 # if prediction[0] > 5:
+#                 #     prediction[0] = 5
+#                 #
+#                 # if prediction[0] < 1:
+#                 #     prediction[0] = 1
+#
+#                 outfile_reader.writerow([row[0], prediction[0]])
+#
+#     return predicted_ratings[[user_dict['A3APW42N5MRVWT']], [product_dict['6305186774']]]
 
 
 
@@ -430,33 +592,60 @@ def reconstruct_demeaned_matrix(U, S, Vt, urm_mean, testing_file, outfile, test_
 #####     MAIN     #####
 ########################
 
+user_dict, product_dict, user_count, product_count = create_user_product_dicts('reviews.training.csv')
+training_matrix = training_mtx('reviews.training.csv', user_dict, product_dict)
+test_user_dict, test_product_dict = get_test_users_products('reviews.test.unlabeled.csv', user_dict, product_dict)
+
+# Merge only new products (on x axis)
+merged_matrix_product_rows = merged_mtx('reviews.test.unlabeled.csv', 'reviews.training.csv', test_user_dict,
+                           test_product_dict, user_dict, product_dict, 1, 2, 0, 1)
+
+# Merge only new users (on y axis)
+merged_matrix_user_rows = merged_mtx('reviews.test.unlabeled.csv', 'reviews.training.csv', test_product_dict,
+                           test_user_dict, product_dict, user_dict, 2, 1, 1, 0)
+
+normalized_matrix_products, matrix_row_mean_products, matrix_column_mean_products, global_mean = normalize_merged_matrix(merged_matrix_product_rows)
+
+normalized_matrix_users, matrix_row_mean_users, matrix_column_mean_users, global_mean = normalize_merged_matrix(merged_matrix_user_rows)
+
+U_products, S_products, Vt_products = compute_svd_from_demeaned(normalized_matrix_products)
+
+U_users, S_users, Vt_users = compute_svd_from_demeaned(normalized_matrix_users)
+
+predicted_ratings = reconstruct_demeaned_matrix('reviews.test.unlabeled.csv', 'reviews.test.labeled.csv',
+                                                test_user_dict, test_product_dict,
+                                                U_products, S_products, Vt_products, U_users, S_users, Vt_users,
+                                                matrix_row_mean_products, matrix_row_mean_users)
+
+
+
 # training_df = json_to_df('reviews.training.json')
 # convert_to_csv(training_df.head(1000))
-user_dict, product_dict, user_count, product_count = create_user_product_dicts('reviews.test.shortened.csv')
-test_user_dict, test_product_dict = get_test_users_products('reviews.dev.shortened.csv', user_dict, product_dict,
-                                                            user_count, product_count)
-merged_matrix = merged_mtx('reviews.dev.shortened.csv', 'reviews.test.shortened.csv', test_user_dict, test_product_dict,
-                           user_dict, product_dict)
+# user_dict, product_dict, user_count, product_count = create_user_product_dicts('reviews.test.shortened.csv')
+# test_user_dict, test_product_dict = get_test_users_products('reviews.dev.shortened.csv', user_dict, product_dict,
+#                                                             user_count, product_count)
+# merged_matrix = merged_mtx('reviews.dev.shortened.csv', 'reviews.test.shortened.csv', test_user_dict, test_product_dict,
+#                            user_dict, product_dict)
 
 # training_matrix = training_mtx('reviews.test.shortened.csv', user_dict, product_dict)
 
 # print(merged_matrix)
 
-normalized_matrix, matrix_mean, global_mean = normalize_merged_matrix(merged_matrix)
+# normalized_matrix, matrix_mean, global_mean = normalize_merged_matrix(merged_matrix)
 
-print(normalized_matrix)
+# print(normalized_matrix)
 
 # num_user_ids, num_product_ids, urm_demeaned, urm_mean = readUrm('reviews.test.shortened.csv', user_dict, product_dict)
 # U, S, Vt = computeSVD(sparse_matrix, 3)
-U, S, Vt = compute_svd_from_demeaned(normalized_matrix)
+# U, S, Vt = compute_svd_from_demeaned(normalized_matrix)
 
 # model_knn = k_nn(reviewer_product_sparse)
 # make_recommendations(reviewer_product_dataframe)
 
 # estimated_ratings = recompose_matrix(U, S, Vt, user_dict, product_dict, 'reviews.training.csv', 'reviews.test.labeled.csv')
 
-predicted_ratings = reconstruct_demeaned_matrix(U, S, Vt, matrix_mean, 'reviews.test.unlabeled.shortened.csv',
-                                                'reviews.test.labeled.csv', test_user_dict, test_product_dict)
+# predicted_ratings = reconstruct_demeaned_matrix(U, S, Vt, matrix_mean, 'reviews.test.unlabeled.shortened.csv',
+#                                                 'reviews.test.labeled.csv', test_user_dict, test_product_dict)
 # print(predicted_ratings)
 
 

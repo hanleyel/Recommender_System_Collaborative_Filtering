@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b9e29b6b-1f71-4630-a905-f4b2d5a3c3f1" name="Default" comment="" />
+    <list default="true" id="b9e29b6b-1f71-4630-a905-f4b2d5a3c3f1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Recommender_System.py" afterPath="$PROJECT_DIR$/Recommender_System.py" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -10,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Recommender_System_Collaborative_Filtering$Recommender_System.coverage" NAME="Recommender_System Coverage Results" MODIFIED="1538842375471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Recommender_System_Collaborative_Filtering$Recommender_System.coverage" NAME="Recommender_System Coverage Results" MODIFIED="1538870941124" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Recommender_System_Collaborative_Filtering$test_field.coverage" NAME="test_field Coverage Results" MODIFIED="1538613451331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
@@ -18,8 +20,8 @@
       <file leaf-file-name="Recommender_System.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Recommender_System.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5">
-              <caret line="436" column="86" lean-forward="true" selection-start-line="436" selection-start-column="86" selection-end-line="436" selection-end-column="86" />
+            <state relative-caret-position="333">
+              <caret line="234" column="32" lean-forward="true" selection-start-line="234" selection-start-column="32" selection-end-line="234" selection-end-column="32" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -27,7 +29,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reviews.test.labeled.csv" pinned="false" current-in-tab="false">
+      <file leaf-file-name="reviews.test.labeled.csv" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/reviews.test.labeled.csv">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="465">
@@ -37,12 +39,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reviews.test.unlabeled.csv" pinned="false" current-in-tab="true">
+      <file leaf-file-name="reviews.test.unlabeled.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="12" lean-forward="false" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+            <state relative-caret-position="0">
+              <caret line="106459" column="0" lean-forward="false" selection-start-line="106459" selection-start-column="0" selection-end-line="106459" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reviews.training.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reviews.training.csv">
+          <provider selected="true" editor-type-id="LargeFileEditor">
+            <state relative-caret-position="-293685">
+              <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
             </state>
           </provider>
         </entry>
@@ -89,8 +100,8 @@
       <list>
         <option value="$PROJECT_DIR$/reviews.dev.csv" />
         <option value="$PROJECT_DIR$/test_field.py" />
-        <option value="$PROJECT_DIR$/Recommender_System.py" />
         <option value="$PROJECT_DIR$/reviews.test.labeled.csv" />
+        <option value="$PROJECT_DIR$/Recommender_System.py" />
       </list>
     </option>
   </component>
@@ -100,7 +111,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="56" />
     <option name="y" value="23" />
     <option name="width" value="1341" />
@@ -229,7 +240,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="56" y="23" width="1341" height="829" extended-state="0" />
+    <frame x="56" y="23" width="1341" height="829" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2147806" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -238,7 +249,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16877638" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44866386" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -466,18 +477,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.training.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="15">
-          <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="-535999">
-          <caret line="9965" column="27" lean-forward="true" selection-start-line="9965" selection-start-column="27" selection-end-line="9965" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reviews.test.labeled..exact.csv" />
     <entry file="file://$PROJECT_DIR$/reviews.test.shortened.csv">
       <provider selected="true" editor-type-id="text-editor">
@@ -503,10 +502,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="106459" column="0" lean-forward="false" selection-start-line="106459" selection-start-column="0" selection-end-line="106459" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.training.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state relative-caret-position="-293685">
+          <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="-535999">
+          <caret line="9965" column="27" lean-forward="true" selection-start-line="9965" selection-start-column="27" selection-end-line="9965" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Recommender_System.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5">
-          <caret line="436" column="86" lean-forward="true" selection-start-line="436" selection-start-column="86" selection-end-line="436" selection-end-column="86" />
+        <state relative-caret-position="333">
+          <caret line="234" column="32" lean-forward="true" selection-start-line="234" selection-start-column="32" selection-end-line="234" selection-end-column="32" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -517,14 +537,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
           <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="12" lean-forward="false" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
           <folding />
         </state>
       </provider>
