@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9e29b6b-1f71-4630-a905-f4b2d5a3c3f1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Recommender_System.py" afterPath="$PROJECT_DIR$/Recommender_System.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Recommender_System_Collaborative_Filtering_From_Scratch-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Recommender_System_Collaborative_Filtering_From_Scratch-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" afterPath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,8 +33,8 @@
       <file leaf-file-name="reviews.test.labeled.csv" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/reviews.test.labeled.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+            <state relative-caret-position="90">
+              <caret line="6" column="21" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -100,8 +101,8 @@
       <list>
         <option value="$PROJECT_DIR$/reviews.dev.csv" />
         <option value="$PROJECT_DIR$/test_field.py" />
-        <option value="$PROJECT_DIR$/reviews.test.labeled.csv" />
         <option value="$PROJECT_DIR$/Recommender_System.py" />
+        <option value="$PROJECT_DIR$/reviews.test.labeled.csv" />
       </list>
     </option>
   </component>
@@ -111,7 +112,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="56" />
     <option name="y" value="23" />
     <option name="width" value="1341" />
@@ -240,7 +241,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="56" y="23" width="1341" height="829" extended-state="1" />
+    <frame x="56" y="23" width="1341" height="829" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2147806" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -535,8 +536,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reviews.test.labeled.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        <state relative-caret-position="90">
+          <caret line="6" column="21" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
           <folding />
         </state>
       </provider>
