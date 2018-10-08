@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9e29b6b-1f71-4630-a905-f4b2d5a3c3f1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" afterPath="$PROJECT_DIR$/Recommender_System_Collaborative_Filtering_From_Scratch.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,7 +30,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reconstructed.normalized.products.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="reconstructed.normalized.products.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reconstructed.normalized.products.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-43371">
@@ -52,8 +53,27 @@
       <file leaf-file-name="reviews.test.unlabeled.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-430446">
+            <state relative-caret-position="15">
               <caret line="1" column="47" lean-forward="false" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reviews.dev.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reviews.dev.json">
+          <provider selected="true" editor-type-id="LargeFileEditor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reviews.dev.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reviews.dev.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="25" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -69,10 +89,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reviews.training.csv" pinned="false" current-in-tab="false">
+      <file leaf-file-name="reviews.training.csv" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/reviews.training.csv">
           <provider selected="true" editor-type-id="LargeFileEditor">
-            <state relative-caret-position="-293685">
+            <state relative-caret-position="-293604">
               <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
             </state>
           </provider>
@@ -118,11 +138,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/reviews.dev.csv" />
         <option value="$PROJECT_DIR$/test_field.py" />
         <option value="$PROJECT_DIR$/Recommender_System.py" />
         <option value="$PROJECT_DIR$/reconstructed.normalized.products.txt" />
         <option value="$PROJECT_DIR$/reviews.training.shortened.csv" />
+        <option value="$PROJECT_DIR$/reviews.dev.csv" />
         <option value="$PROJECT_DIR$/reviews.test.labeled.csv" />
       </list>
     </option>
@@ -134,7 +154,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="268" />
+    <option name="x" value="134" />
     <option name="y" value="23" />
     <option name="width" value="1341" />
     <option name="height" value="829" />
@@ -262,9 +282,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="268" y="23" width="1341" height="829" extended-state="0" />
+    <frame x="134" y="23" width="1341" height="829" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2147806" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2147806" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -368,6 +389,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="25" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -455,13 +477,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.dev.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/shortened_training_data.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1185">
@@ -470,13 +485,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/recomposed_matrix.csv" />
-    <entry file="file://$PROJECT_DIR$/reviews.training.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="-300">
-          <caret line="1" column="653" lean-forward="false" selection-start-line="1" selection-start-column="653" selection-end-line="1" selection-end-column="653" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../SI630_Homework2_Word2Vec/word2vec.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5859">
@@ -488,13 +496,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="10" lean-forward="false" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.dev.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="25" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -511,19 +512,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="394">
           <caret line="666" column="0" lean-forward="false" selection-start-line="666" selection-start-column="0" selection-end-line="666" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.training.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="-293685">
-          <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="-535999">
-          <caret line="9965" column="27" lean-forward="true" selection-start-line="9965" selection-start-column="27" selection-end-line="9965" selection-end-column="27" />
           <folding />
         </state>
       </provider>
@@ -554,14 +542,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-430446">
-          <caret line="1" column="47" lean-forward="false" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reviews.training.shortened.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -570,10 +550,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.test.unlabeled.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="47" lean-forward="false" selection-start-line="1" selection-start-column="47" selection-end-line="1" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.dev.json">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/reviews.test.labeled.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.training.json">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state relative-caret-position="15">
+          <caret line="1" column="653" lean-forward="false" selection-start-line="1" selection-start-column="653" selection-end-line="1" selection-end-column="653" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.dev.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="25" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reviews.training.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state relative-caret-position="-293604">
+          <caret line="26509" column="0" lean-forward="false" selection-start-line="26509" selection-start-column="0" selection-end-line="26509" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="-535999">
+          <caret line="9965" column="27" lean-forward="true" selection-start-line="9965" selection-start-column="27" selection-end-line="9965" selection-end-column="27" />
           <folding />
         </state>
       </provider>
